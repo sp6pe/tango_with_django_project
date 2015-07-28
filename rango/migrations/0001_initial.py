@@ -17,6 +17,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=128)),
                 ('likes', models.IntegerField(default=0)),
                 ('views', models.IntegerField(default=0)),
+                ('slug', models.SlugField(unique=True)),
             ],
         ),
         migrations.CreateModel(
