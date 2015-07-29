@@ -15,7 +15,8 @@ def index(request):
     # Retrieve the top 5 only - or all if less than 5.
     # Place the list in our context_dict dictionary which will be passed to the template engine.
     category_list = Category.objects.order_by('-likes')[:5]
-    context_dict = {'categories': category_list}
+    page_list = Page.objects.order_by('-view')[:5]
+    context_dict = {'categories': category_list,'pages': page_list}
 
     # Render the response and send it back!
     return render(request, 'rango/index.html', context_dict)
@@ -31,7 +32,7 @@ def category(request, category_name_slug):
         # So the .get() method returns one model instance or raises an exception.
         category = Category.objects.get(slug=category_name_slug)
         context_dict['category_name'] = category.name
-
+        context_dict['category_name_slug'] = category_name_slug
         # Retrieve all of the associated pages.
         # Note that filter returns >= 1 model instance.
         pages = Page.objects.filter(category=category)
@@ -80,7 +81,7 @@ def add_page(request, category_name_slug):
         cat = Category.objects.get(slug=category_name_slug)
     except Category.DoesNotExist:
                 cat = None
-                
+
     if request.method == 'POST':
         form = PageForm(request.POST)
         if form.is_valid():
@@ -96,7 +97,7 @@ def add_page(request, category_name_slug):
     else:
         form = PageForm()
 
-    context_dict = {'form':form, 'category': cat}
+    context_dict = {'form':form, 'category': category,'category_name_slug': category_name_slug}
 
     return render(request, 'rango/add_page.html', context_dict)
 
